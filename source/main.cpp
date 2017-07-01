@@ -17,13 +17,25 @@ float f1 = 440;
 float f2 = 880;
 float f;
 
-float fC = 261.626;
-float fD = 293.7;
-float fE = 329.628;
-float fF = 349.228;
-float fG = 391.995;
-float fA = 444.000;
-float fH = 493.883;
+float fH = 123.47;
+
+float fc = 130.8;
+float fd = 146.8;
+float fe = 164.8;
+float ff = 174.6;
+float fg = 196;
+float fa = 220;
+float fh = 247;
+
+float fc1 = 261.6;
+float fd1 = 293.6;
+float fe1 = 329.6;
+float ff1 = 349.2;
+float fg1 = 392;
+float fa1 = 400;
+float fh1 = 493.9;
+
+float fp = 0;
 
 INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -64,7 +76,6 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevinstance, PSTR szCmdLIne, int iCmdShow)
 {
-  srand((unsigned int)time(NULL));
   HWND hwndMainWindow = CreateDialog(hinstance, MAKEINTRESOURCE(IDD_MAINVIEW), NULL, DialogProc);
   ShowWindow(hwndMainWindow, iCmdShow);
   MSG msg = {};
@@ -78,7 +89,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevinstance, PSTR szCmdLIne,
   pcmWaveFormat.nBlockAlign = 1; //2 jak na 16 bitow
   pcmWaveFormat.cbSize = 0;
 
-  MMRESULT mmResult;
+  MMRESULT mmResult = 0;
   HWAVEOUT hwo = 0;
   UINT devId;
 
@@ -97,89 +108,72 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevinstance, PSTR szCmdLIne,
 
   BYTE *pBufferForAudio = new BYTE[pcmWaveFormat.nAvgBytesPerSec * czas];
 
- /* int i = 0;
-   for (; i < 0.5* pcmWaveFormat.nAvgBytesPerSec; i++)
-  {
-  float t = i / (float)pcmWaveFormat.nSamplesPerSec;
-  f = fC;
-  pBufferForAudio[i] = 128 * sin(2 * Pi*f*t) + 128;
-  }
-  for (; i < 1.0 * pcmWaveFormat.nAvgBytesPerSec; i++)
-  {
-  float t = i / (float)pcmWaveFormat.nSamplesPerSec;
-  f = fD;
-  pBufferForAudio[i] = 128 * sin(2 * Pi*f*t) + 128;
-  }
-  for (; i < 1.5 * pcmWaveFormat.nAvgBytesPerSec; i++)
-  {
-  float t = i / (float)pcmWaveFormat.nSamplesPerSec;
-  f = fE;
-  pBufferForAudio[i] = 128 * sin(2 * Pi*f*t) + 128;
-  }
-  for (; i < 2.0 * pcmWaveFormat.nAvgBytesPerSec; i++)
-  {
-  float t = i / (float)pcmWaveFormat.nSamplesPerSec;
-  f = fF;
-  pBufferForAudio[i] = 128 * sin(2 * Pi*f*t) + 128;
-  }
-  for (; i < 2.5 * pcmWaveFormat.nAvgBytesPerSec; i++)
-  {
-  float t = i / (float)pcmWaveFormat.nSamplesPerSec;
-  f = fG;
-  pBufferForAudio[i] = 128 * sin(2 * Pi*f*t) + 128;
-  }
-  for (; i < 3.0 * pcmWaveFormat.nAvgBytesPerSec; i++)
-  {
-  float t = i / (float)pcmWaveFormat.nSamplesPerSec;
-  f = fA;
-  pBufferForAudio[i] = 128 * sin(2 * Pi*f*t) + 128;
-  }
-  for (; i < 3.5 * pcmWaveFormat.nAvgBytesPerSec; i++)
-  {
-  float t = i / (float)pcmWaveFormat.nSamplesPerSec;
-  f = fH;
-  pBufferForAudio[i] = 128 * sin(2 * Pi*f*t) + 128;
-  }*/
-  muzyka(pBufferForAudio, pcmWaveFormat, snotes, stime);
+  /* int i = 0;
+    for (; i < 0.5* pcmWaveFormat.nAvgBytesPerSec; i++)
+   {
+   float t = i / (float)pcmWaveFormat.nSamplesPerSec;
+   f = fC;
+   pBufferForAudio[i] = 128 * sin(2 * Pi*f*t) + 128;
+   }
+   for (; i < 1.0 * pcmWaveFormat.nAvgBytesPerSec; i++)
+   {
+   float t = i / (float)pcmWaveFormat.nSamplesPerSec;
+   f = fD;
+   pBufferForAudio[i] = 128 * sin(2 * Pi*f*t) + 128;
+   }
+   for (; i < 1.5 * pcmWaveFormat.nAvgBytesPerSec; i++)
+   {
+   float t = i / (float)pcmWaveFormat.nSamplesPerSec;
+   f = fE;
+   pBufferForAudio[i] = 128 * sin(2 * Pi*f*t) + 128;
+   }
+   for (; i < 2.0 * pcmWaveFormat.nAvgBytesPerSec; i++)
+   {
+   float t = i / (float)pcmWaveFormat.nSamplesPerSec;
+   f = fF;
+   pBufferForAudio[i] = 128 * sin(2 * Pi*f*t) + 128;
+   }
+   for (; i < 2.5 * pcmWaveFormat.nAvgBytesPerSec; i++)
+   {
+   float t = i / (float)pcmWaveFormat.nSamplesPerSec;
+   f = fG;
+   pBufferForAudio[i] = 128 * sin(2 * Pi*f*t) + 128;
+   }
+   for (; i < 3.0 * pcmWaveFormat.nAvgBytesPerSec; i++)
+   {
+   float t = i / (float)pcmWaveFormat.nSamplesPerSec;
+   f = fA;
+   pBufferForAudio[i] = 128 * sin(2 * Pi*f*t) + 128;
+   }
+   for (; i < 3.5 * pcmWaveFormat.nAvgBytesPerSec; i++)
+   {
+   float t = i / (float)pcmWaveFormat.nSamplesPerSec;
+   f = fH;
+   pBufferForAudio[i] = 128 * sin(2 * Pi*f*t) + 128;
+   }*/
 
   WAVEHDR whdr;
-
   ZeroMemory(&whdr, sizeof(WAVEHDR));
-  whdr.lpData = (LPSTR)pBufferForAudio;
-  whdr.dwBufferLength = czas * pcmWaveFormat.nAvgBytesPerSec;
-
-  mmResult = waveOutPrepareHeader(hwo, &whdr, sizeof(WAVEHDR));
-  mmResult = waveOutWrite(hwo, &whdr, sizeof(WAVEHDR));
-
-  while ((whdr.dwFlags & WHDR_DONE) != WHDR_DONE) Sleep(100);
-  //czekanie
-  mmResult = waveOutPrepareHeader(hwo, &whdr, sizeof(WAVEHDR));
-
+  whdr.lpData = reinterpret_cast<LPSTR>(pBufferForAudio);
+  /*
+  MSG msg = {};
   while (GetMessage(&msg, NULL, 0, 0))
   {
-    TranslateMessage(&msg);
-    DispatchMessage(&msg);
-  }
+  TranslateMessage(&msg);
+  DispatchMessage(&msg);
+  }*/
 
-  /*for (int i = 0; i < 4 * pcmWaveFormat.nAvgBytesPerSec; i++)
+  whdr.dwBufferLength = czas * pcmWaveFormat.nAvgBytesPerSec;
   {
-  float t = i / (float)pcmWaveFormat.nSamplesPerSec;
-  f = f1 + (f2 - f1)*t;
-  pBufferForAudio[i] = (128 * cos(2 * Pi*f*t) + 128);
+    muzyka(pBufferForAudio, pcmWaveFormat, snotes, stime);
+    mmResult = waveOutPrepareHeader(hwo, &whdr, sizeof(WAVEHDR));
+    mmResult = waveOutWrite(hwo, &whdr, sizeof(WAVEHDR));
+    while ((whdr.dwFlags & WHDR_DONE) != WHDR_DONE)Sleep(100);
+    mmResult = waveOutUnprepareHeader(hwo, &whdr, sizeof(WAVEHDR));
   }
 
-  ZeroMemory(&whdr, sizeof(WAVEHDR));
-  whdr.lpData = (LPSTR)pBufferForAudio;
-  whdr.dwBufferLength = 4 * pcmWaveFormat.nAvgBytesPerSec;
-
-  mmResult = waveOutPrepareHeader(hwo, &whdr, sizeof(WAVEHDR));
-  mmResult = waveOutWrite(hwo, &whdr, sizeof(WAVEHDR));
-
-  while ((whdr.dwFlags & WHDR_DONE) != WHDR_DONE) Sleep(100);
-  //czekanie
-  */
+  mmResult = waveOutClose(hwo);
   delete[] pBufferForAudio;
-
   return 0;
 }
 void muzyka(BYTE *pBufferForAudio, WAVEFORMATEX pcmWaveFormat, char *snotes, char *stime)
@@ -194,18 +188,14 @@ void muzyka(BYTE *pBufferForAudio, WAVEFORMATEX pcmWaveFormat, char *snotes, cha
     czasNuty = ((int)stime[j]) / 16.0;
     switch (snotes[j])
     {
-    case 'C': nuta = fC; break;
-    case 'D': nuta = fD; break;
-    case 'E': nuta = fE; break;
-    case 'F': nuta = fF; break;
-    case 'G': nuta = fG; break;
-    case 'A': nuta = fA; break;
-    case 'H': nuta = fH; break;
+    case 'C': nuta = fc; break;
+    case 'D': nuta = fd; break;
+    case 'E': nuta = fe; break;
+    case 'F': nuta = ff; break;
+    case 'G': nuta = fg; break;
+    case 'A': nuta = fh; break;
+    case 'H': nuta = fp; break;
     }
-    // i= Note(pBufferForAudio, i, 0.25*S, fC, pcmWaveFormat.nSamplesPerSec);
-    // i = Note(pBufferForAudio, i, 0.125*S, fG, pcmWaveFormat.nSamplesPerSec);
-     //i = Note(pBufferForAudio, i, 0.5*S, fE, pcmWaveFormat.nSamplesPerSec);
-
     k = Note(pBufferForAudio, k, czasNuty*S, nuta, pcmWaveFormat.nSamplesPerSec);
   }
 }
@@ -218,7 +208,7 @@ int Note(BYTE* pBufferForAudio, int iStart, int iDuration, float fNote, float fD
     float t = i / fDiv;
     pBufferForAudio[i] = 128 * sin(2 * Pi*fNote*t) + 128;
   }
-  for (; i < iStart + iDuration; i++)
+  for (; i < iStart + iDuration; ++i)
   {
     float t = i / fDiv;
     pBufferForAudio[i] = 128;
