@@ -2,38 +2,44 @@
 #include<stdio.h>
 #include "res.h"
 #include <cstdlib>
-#include <ctime>
 #include <math.h>
 
 #pragma comment(lib,"winmm.lib")
 #define Pi 3.141592
 #define czas 35
-char *snotes = "D C C E F G A H C H A A A A G F E D F E E D C E D G C E E E E A H C H A H A G A E E E A H C H A H A G H C G F E";
-char *stime = "16 16 16 8 4 16 16 16 16 8 4 16 16 16 16 8 4 16 16 16 16 8 4 16 16 16 16 8 4 16 16 16 16 8 4 16 16 16 16 8 4 16 16 16 16 8 4 16 16 16 16 8 4 16 16 16";
-void muzyka(BYTE *pBufferForAudio, WAVEFORMATEX pcmWaveFormat, char *snotes, char *stime);
+//char *snotes = "D C C E F G A H C H A A A A G F E D F E E D C E D G C E E E E A H C H A H A G A E E E A H C H A H A G H C G F E";
+//char *stime = "16 16 16 8 4 16 16 16 16 8 4 16 16 16 16 8 4 16 16 16 16 8 4 16 16 16 16 8 4 16 16 16 16 8 4 16 16 16 16 8 4 16 16 16 16 8 4 16 16 16 16 8 4 16 16 16";
+
+char snotes[100] = { 'a','b','c','c','c','a','d','c','b','a','g','c','b','b','a','a','b','c','c','c','a','d','c','b','a','g','g','c','e','g','f','g','g','b','b','a','b','b','b','d','d','c' };
+
+double stime[100] = { 24,24,24,4,24,24,24,24,
+24,24,24,4,24,24,24,24,
+24,24,24,4,24,24,24,24,
+24,24,24,4,24,24,24,24 };
+void muzyka(BYTE *pBufferForAudio, WAVEFORMATEX pcmWaveFormat, char *snotes, double *stime);
 int Note(BYTE* pBufferForAudio, int iStart, int iDuration, float fNote, float fDiv);
 CHAR szText[5];
-float f1 = 440;
-float f2 = 880;
-float f;
 
 float fH = 123.47;
 
-float fc = 130.8;
+/*float fc = 130.8;
 float fd = 146.8;
 float fe = 164.8;
 float ff = 174.6;
 float fg = 196;
 float fa = 220;
 float fh = 247;
-
-float fc1 = 261.6;
-float fd1 = 293.6;
+float fis = 185.0;
+*/
+float fa1 = 440.0;
+float fb1 = 493.88;
 float fe1 = 329.6;
 float ff1 = 349.2;
 float fg1 = 392;
-float fa1 = 400;
-float fh1 = 493.9;
+float fc2 = 523.25;
+float fd2 = 587.32;
+float fe2 = 659.25;
+float ff2 = 698.45;
 
 float fp = 0;
 
@@ -72,7 +78,6 @@ INT_PTR CALLBACK DialogProc(HWND hwndDig, UINT uMsg, WPARAM wParam, LPARAM lPara
 }
 
 //utwor na conajmniej 35sek 
-
 
 int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevinstance, PSTR szCmdLIne, int iCmdShow)
 {
@@ -176,25 +181,24 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevinstance, PSTR szCmdLIne,
   delete[] pBufferForAudio;
   return 0;
 }
-void muzyka(BYTE *pBufferForAudio, WAVEFORMATEX pcmWaveFormat, char *snotes, char *stime)
+void muzyka(BYTE *pBufferForAudio, WAVEFORMATEX pcmWaveFormat, char *snotes, double  *stime)
 {
   float S = pcmWaveFormat.nAvgBytesPerSec;
-  float nuta;
+  float nuta=0.0;
   float czasNuty;
-  int i = 0;
   int k = 0;
-  for (int j = 0; j < 2 * sizeof(snotes); j += 2)
+  for (int j = 0; j < 100; j++)
   {
-    czasNuty = ((int)stime[j]) / 16.0;
+    czasNuty = (stime[j]) / 32.0;
     switch (snotes[j])
     {
-    case 'C': nuta = fc; break;
-    case 'D': nuta = fd; break;
-    case 'E': nuta = fe; break;
-    case 'F': nuta = ff; break;
-    case 'G': nuta = fg; break;
-    case 'A': nuta = fh; break;
-    case 'H': nuta = fp; break;
+    case 'a': nuta = fa1; break;
+    case 'b': nuta = fb1; break;
+    case 'c': nuta = fc2; break;
+    case 'd': nuta = fd2; break;
+    case 'e': nuta = fe2; break;
+    case 'g': nuta = fg1; break;
+    case 'f': nuta = ff2; break;
     }
     k = Note(pBufferForAudio, k, czasNuty*S, nuta, pcmWaveFormat.nSamplesPerSec);
   }
